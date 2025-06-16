@@ -1,0 +1,1171 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interaktives Tool: Schweizer Listenwahl</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #f5f5f5;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: #f9fafb;
+            border-radius: 8px;
+            padding: 30px;
+        }
+
+        h1 {
+            color: #1f2937;
+            margin-bottom: 24px;
+            font-size: 28px;
+        }
+
+        h2 {
+            color: #374151;
+            margin-bottom: 16px;
+            font-size: 20px;
+        }
+
+        h3 {
+            color: #4b5563;
+            margin-bottom: 12px;
+            font-size: 16px;
+        }
+
+        .info-box {
+            background-color: #dbeafe;
+            border: 1px solid #93c5fd;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 24px;
+        }
+
+        .info-box h2 {
+            color: #1e3a8a;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .info-box ul {
+            margin-top: 12px;
+            color: #1e40af;
+            font-size: 14px;
+        }
+
+        .info-box li {
+            margin-bottom: 8px;
+            margin-left: 20px;
+        }
+
+        .close-btn {
+            float: right;
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            color: #3b82f6;
+        }
+
+        .tutorial-box {
+            background-color: #d1fae5;
+            border: 2px solid #34d399;
+            border-radius: 8px;
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+
+        .tutorial-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 16px;
+        }
+
+        .tutorial-header h2 {
+            color: #064e3b;
+            font-size: 20px;
+        }
+
+        .tutorial-task {
+            background-color: white;
+            padding: 12px;
+            border-radius: 4px;
+            border: 1px solid #6ee7b7;
+            margin-top: 8px;
+        }
+
+        .tutorial-task p {
+            font-size: 14px;
+        }
+
+        .success-message {
+            color: #059669;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            margin-top: 8px;
+        }
+
+        .progress-bar {
+            display: flex;
+            gap: 8px;
+            margin-top: 16px;
+        }
+
+        .progress-step {
+            flex: 1;
+            height: 8px;
+            background-color: #d1d5db;
+            border-radius: 4px;
+        }
+
+        .progress-step.completed {
+            background-color: #10b981;
+        }
+
+        .progress-step.current {
+            background-color: #86efac;
+        }
+
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+
+        @media (max-width: 768px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .list-selection {
+            margin-bottom: 24px;
+        }
+
+        .list-button {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 8px;
+            text-align: left;
+            background-color: white;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .list-button:hover {
+            border-color: #9ca3af;
+        }
+
+        .list-button.selected {
+            border-color: #3b82f6;
+            background-color: #eff6ff;
+        }
+
+        .list-button strong {
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .list-button small {
+            color: #6b7280;
+            font-size: 14px;
+        }
+
+        .party-color {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 8px;
+        }
+
+        .custom-list-input {
+            width: 100%;
+            padding: 8px 12px;
+            margin-top: 8px;
+            border: 1px solid #d1d5db;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .candidates-section {
+            margin-bottom: 24px;
+        }
+
+        .party-box {
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 16px;
+            background-color: white;
+        }
+
+        .party-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .party-header h3 {
+            margin: 0;
+            font-size: 14px;
+        }
+
+        .candidates-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+
+        .candidate-btn {
+            padding: 8px;
+            background-color: #f3f4f6;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            text-align: left;
+            transition: background-color 0.2s;
+        }
+
+        .candidate-btn:hover {
+            background-color: #e5e7eb;
+        }
+
+        .ballot-container {
+            background-color: white;
+            border: 2px solid #6b7280;
+            border-radius: 8px;
+            padding: 24px;
+            min-height: 400px;
+        }
+
+        .ballot-header {
+            text-align: center;
+            margin-bottom: 16px;
+        }
+
+        .ballot-header h3 {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+
+        .ballot-header p {
+            color: #6b7280;
+            font-size: 14px;
+        }
+
+        .list-name-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 12px;
+            background-color: #f3f4f6;
+            border-radius: 4px;
+            margin-top: 8px;
+            font-size: 14px;
+        }
+
+        .ballot-lines {
+            margin-top: 20px;
+        }
+
+        .ballot-line {
+            display: flex;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .line-number {
+            width: 32px;
+            color: #9ca3af;
+            font-size: 14px;
+        }
+
+        .line-content {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .candidate-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .empty-line {
+            color: #d1d5db;
+        }
+
+        .remove-btn {
+            background: none;
+            border: none;
+            color: #ef4444;
+            cursor: pointer;
+            padding: 4px;
+        }
+
+        .remove-btn:hover {
+            color: #dc2626;
+        }
+
+        .ballot-footer {
+            margin-top: 24px;
+            padding-top: 16px;
+            border-top: 1px solid #e5e7eb;
+            font-size: 14px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background-color: #3b82f6;
+            color: white;
+            width: 100%;
+        }
+
+        .btn-primary:hover {
+            background-color: #2563eb;
+        }
+
+        .btn-primary:disabled {
+            background-color: #9ca3af;
+            cursor: not-allowed;
+        }
+
+        .btn-secondary {
+            background-color: #6b7280;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-secondary:hover {
+            background-color: #4b5563;
+        }
+
+        .btn-start {
+            background-color: #3b82f6;
+            color: white;
+            margin-top: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            font-size: 14px;
+        }
+
+        .results-section {
+            margin-top: 32px;
+            background-color: white;
+            border-radius: 8px;
+            padding: 24px;
+            border: 2px solid #e5e7eb;
+        }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin-top: 24px;
+        }
+
+        .results-column h3 {
+            font-size: 18px;
+            margin-bottom: 16px;
+        }
+
+        .result-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px;
+            background-color: #f9fafb;
+            border-radius: 4px;
+            margin-bottom: 8px;
+        }
+
+        .result-party {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .result-votes {
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .explanation-box {
+            margin-top: 24px;
+            padding: 16px;
+            background-color: #fef3c7;
+            border: 1px solid #fcd34d;
+            border-radius: 8px;
+        }
+
+        .explanation-box h4 {
+            color: #92400e;
+            margin-bottom: 8px;
+        }
+
+        .explanation-box ul {
+            color: #92400e;
+            font-size: 14px;
+            margin-left: 20px;
+        }
+
+        .explanation-box li {
+            margin-bottom: 4px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .sp { background-color: #ef4444; }
+        .fdp { background-color: #3b82f6; }
+        .svp { background-color: #15803d; }
+        .gruene { background-color: #10b981; }
+
+        @media print {
+            body {
+                background: white;
+            }
+            .container {
+                box-shadow: none;
+                padding: 20px;
+            }
+            .no-print {
+                display: none !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Interaktives Tool: Schweizer Listenwahl</h1>
+
+        <!-- Info Box -->
+        <div id="infoBox" class="info-box">
+            <button class="close-btn" onclick="closeInfo()">×</button>
+            <h2>ℹ️ So funktioniert die Listenwahl</h2>
+            <ul>
+                <li><strong>Vorgedruckte Liste:</strong> Wählen Sie eine Parteiliste mit vorgedruckten Kandidaten</li>
+                <li><strong>Leere Liste:</strong> Stellen Sie Ihre eigene Kandidatenliste zusammen</li>
+                <li><strong>Panaschieren:</strong> Fügen Sie Kandidaten anderer Parteien zu Ihrer Liste hinzu</li>
+                <li><strong>Kumulieren:</strong> Schreiben Sie denselben Kandidaten bis zu 2x auf</li>
+                <li><strong>Streichen:</strong> Entfernen Sie unerwünschte Kandidaten von der Liste</li>
+            </ul>
+            <button class="btn btn-start" onclick="startTutorial()">
+                ▶️ Interaktives Tutorial starten
+            </button>
+        </div>
+
+        <!-- Tutorial Box -->
+        <div id="tutorialBox" class="tutorial-box hidden">
+            <div class="tutorial-header">
+                <h2 id="tutorialTitle">Tutorial</h2>
+                <button class="close-btn" onclick="endTutorial()">Tutorial beenden</button>
+            </div>
+            <div id="tutorialContent"></div>
+            <div class="progress-bar" id="progressBar"></div>
+        </div>
+
+        <div class="main-grid">
+            <!-- Linke Seite -->
+            <div>
+                <h2>1. Wählen Sie eine Liste</h2>
+                <div class="list-selection">
+                    <button class="list-button" onclick="selectList('empty')">
+                        <strong>Leere Liste</strong>
+                        <small>Stellen Sie Ihre eigene Liste zusammen</small>
+                    </button>
+                    <input type="text" id="customListName" class="custom-list-input hidden" 
+                           placeholder="Listenbezeichnung eingeben (optional)" maxlength="50">
+                    
+                    <button class="list-button" onclick="selectList('sp')">
+                        <span class="party-color sp"></span>
+                        <strong>SP - Sozialdemokratische Partei</strong>
+                    </button>
+                    
+                    <button class="list-button" onclick="selectList('fdp')">
+                        <span class="party-color fdp"></span>
+                        <strong>FDP - Die Liberalen</strong>
+                    </button>
+                    
+                    <button class="list-button" onclick="selectList('svp')">
+                        <span class="party-color svp"></span>
+                        <strong>SVP - Schweizerische Volkspartei</strong>
+                    </button>
+                    
+                    <button class="list-button" onclick="selectList('gruene')">
+                        <span class="party-color gruene"></span>
+                        <strong>GRÜNE</strong>
+                    </button>
+                </div>
+
+                <h2>2. Kandidaten hinzufügen (Panaschieren)</h2>
+                <div class="candidates-section" id="candidatesSection"></div>
+            </div>
+
+            <!-- Rechte Seite -->
+            <div>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                    <h2>Ihr Wahlzettel</h2>
+                    <button class="btn btn-secondary no-print" onclick="printBallot()">
+                        🖨️ Drucken
+                    </button>
+                </div>
+                
+                <div class="ballot-container" id="ballotContainer">
+                    <div class="ballot-header">
+                        <h3>WAHLZETTEL</h3>
+                        <p>Nationalratswahl - 4 Sitze</p>
+                        <div id="listNameBadge"></div>
+                    </div>
+                    
+                    <div class="ballot-lines" id="ballotLines"></div>
+                    
+                    <div class="ballot-footer">
+                        <span id="usedVotes">Verwendete Stimmen: 0 / 4</span>
+                        <span id="emptyLines">Leere Linien: 4</span>
+                    </div>
+                </div>
+
+                <button class="btn btn-primary no-print" onclick="calculateResults()" id="calculateBtn">
+                    Stimmen berechnen
+                </button>
+                
+                <p class="hidden" id="tutorialNote" style="text-align: center; color: #6b7280; font-size: 14px; margin-top: 8px;">
+                    Die Stimmberechnung ist während des Tutorials deaktiviert.
+                </p>
+            </div>
+        </div>
+
+        <!-- Ergebnisse -->
+        <div id="resultsSection" class="results-section hidden">
+            <h2 style="font-size: 24px; margin-bottom: 24px;">Ergebnisse</h2>
+            
+            <div class="results-grid">
+                <div class="results-column">
+                    <h3>Parteistimmen</h3>
+                    <div id="partyResults"></div>
+                </div>
+                
+                <div class="results-column">
+                    <h3>Kandidatenstimmen</h3>
+                    <div id="candidateResults" style="max-height: 300px; overflow-y: auto;"></div>
+                </div>
+            </div>
+            
+            <div class="explanation-box">
+                <h4>Erklärung der Stimmenzählung:</h4>
+                <ul>
+                    <li>Jeder gewählte Kandidat erhält eine Kandidatenstimme</li>
+                    <li>Kandidatenstimmen zählen auch als Parteistimmen für ihre jeweilige Partei</li>
+                    <li id="emptyLinesExplanation">Leere Linien auf vorgedruckten Listen werden als Parteistimmen gezählt</li>
+                    <li>Die Parteistimmen entscheiden über die Sitzverteilung zwischen den Parteien</li>
+                    <li>Die Kandidatenstimmen entscheiden, welche Kandidaten innerhalb einer Partei gewählt werden</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Daten
+        const parties = {
+            sp: {
+                name: 'SP - Sozialdemokratische Partei',
+                color: 'sp',
+                candidates: [
+                    { id: 'sp1', name: 'Anna Müller', party: 'sp' },
+                    { id: 'sp2', name: 'Peter Schmidt', party: 'sp' },
+                    { id: 'sp3', name: 'Laura Weber', party: 'sp' },
+                    { id: 'sp4', name: 'Thomas Fischer', party: 'sp' }
+                ]
+            },
+            fdp: {
+                name: 'FDP - Die Liberalen',
+                color: 'fdp',
+                candidates: [
+                    { id: 'fdp1', name: 'Maria Schneider', party: 'fdp' },
+                    { id: 'fdp2', name: 'Hans Meier', party: 'fdp' },
+                    { id: 'fdp3', name: 'Julia Keller', party: 'fdp' },
+                    { id: 'fdp4', name: 'Robert Wagner', party: 'fdp' }
+                ]
+            },
+            svp: {
+                name: 'SVP - Schweizerische Volkspartei',
+                color: 'svp',
+                candidates: [
+                    { id: 'svp1', name: 'Beat Zimmermann', party: 'svp' },
+                    { id: 'svp2', name: 'Ursula Bauer', party: 'svp' },
+                    { id: 'svp3', name: 'Stefan Huber', party: 'svp' },
+                    { id: 'svp4', name: 'Claudia Meyer', party: 'svp' }
+                ]
+            },
+            gruene: {
+                name: 'GRÜNE',
+                color: 'gruene',
+                candidates: [
+                    { id: 'gr1', name: 'Eva Brunner', party: 'gruene' },
+                    { id: 'gr2', name: 'Jonas Lehmann', party: 'gruene' },
+                    { id: 'gr3', name: 'Sophie Gerber', party: 'gruene' },
+                    { id: 'gr4', name: 'Marc Steiner', party: 'gruene' }
+                ]
+            }
+        };
+
+        const tutorialSteps = [
+            {
+                id: 'basic',
+                title: 'Aufgabe 1: Vorgedruckte Liste wählen',
+                description: 'Wählen Sie die Liste der SP und behalten Sie alle Kandidaten.',
+                instruction: 'Klicken Sie auf "SP - Sozialdemokratische Partei" bei der Listenauswahl.',
+                check: () => state.selectedList === 'sp'
+            },
+            {
+                id: 'strike',
+                title: 'Aufgabe 2: Kandidaten streichen',
+                description: 'Wählen Sie die FDP-Liste und streichen Sie einen Kandidaten.',
+                instruction: 'Wählen Sie die FDP-Liste und entfernen Sie einen beliebigen Kandidaten mit dem X-Button.',
+                check: () => state.selectedList === 'fdp' && state.ballot.length === 3
+            },
+            {
+                id: 'panaschieren',
+                title: 'Aufgabe 3: Panaschieren',
+                description: 'Wählen Sie die GRÜNE-Liste und fügen Sie einen Kandidaten der SP hinzu.',
+                instruction: 'Wählen Sie zuerst die GRÜNE-Liste, streichen Sie einen GRÜNEN-Kandidaten und fügen Sie dann einen SP-Kandidaten hinzu.',
+                check: () => state.selectedList === 'gruene' && state.ballot.some(c => c.party === 'sp') && state.ballot.length === 4
+            },
+            {
+                id: 'kumulieren',
+                title: 'Aufgabe 4: Kumulieren',
+                description: 'Wählen Sie eine leere Liste und fügen Sie denselben Kandidaten zweimal hinzu.',
+                instruction: 'Wählen Sie "Leere Liste" und fügen Sie denselben Kandidaten zweimal hinzu.',
+                check: () => {
+                    const counts = {};
+                    state.ballot.forEach(c => {
+                        counts[c.id] = (counts[c.id] || 0) + 1;
+                    });
+                    return state.selectedList === 'empty' && Object.values(counts).some(count => count >= 2);
+                }
+            },
+            {
+                id: 'mixed',
+                title: 'Aufgabe 5: Gemischte Liste',
+                description: 'Erstellen Sie eine leere Liste mit Kandidaten aus mindestens 3 verschiedenen Parteien.',
+                instruction: 'Wählen Sie "Leere Liste" und fügen Sie je einen Kandidaten von mindestens 3 verschiedenen Parteien hinzu.',
+                check: () => {
+                    const partiesSet = new Set(state.ballot.map(c => c.party));
+                    return state.selectedList === 'empty' && partiesSet.size >= 3;
+                }
+            }
+        ];
+
+        // State
+        let state = {
+            selectedList: '',
+            customListName: '',
+            ballot: [],
+            showResults: false,
+            tutorialMode: false,
+            currentTutorialStep: 0,
+            tutorialCompleted: []
+        };
+
+        const maxSeats = 4;
+
+        // Initialisierung
+        function init() {
+            renderCandidates();
+            updateBallot();
+        }
+
+        // UI Funktionen
+        function closeInfo() {
+            document.getElementById('infoBox').classList.add('hidden');
+        }
+
+        function startTutorial() {
+            state.tutorialMode = true;
+            state.currentTutorialStep = 0;
+            state.tutorialCompleted = [];
+            document.getElementById('infoBox').classList.add('hidden');
+            document.getElementById('tutorialBox').classList.remove('hidden');
+            document.getElementById('calculateBtn').disabled = true;
+            document.getElementById('tutorialNote').classList.remove('hidden');
+            updateTutorial();
+            resetBallot();
+        }
+
+        function endTutorial() {
+            state.tutorialMode = false;
+            document.getElementById('tutorialBox').classList.add('hidden');
+            document.getElementById('calculateBtn').disabled = false;
+            document.getElementById('tutorialNote').classList.add('hidden');
+            resetBallot();
+        }
+
+        function updateTutorial() {
+            const step = tutorialSteps[state.currentTutorialStep];
+            const content = document.getElementById('tutorialContent');
+            
+            content.innerHTML = `
+                <h3 style="color: #047857; margin-bottom: 8px;">${step.title}</h3>
+                <p style="color: #059669; margin-bottom: 8px;">${step.description}</p>
+                <div class="tutorial-task">
+                    <p><strong>Anleitung:</strong> ${step.instruction}</p>
+                    ${state.tutorialCompleted.includes(step.id) ? 
+                        '<p class="success-message">✓ Aufgabe erfolgreich gelöst!</p>' : ''}
+                </div>
+            `;
+
+            // Progress Bar
+            const progressBar = document.getElementById('progressBar');
+            progressBar.innerHTML = tutorialSteps.map((s, i) => {
+                let className = 'progress-step';
+                if (state.tutorialCompleted.includes(s.id)) className += ' completed';
+                else if (i === state.currentTutorialStep) className += ' current';
+                return `<div class="${className}"></div>`;
+            }).join('');
+
+            // Check step completion
+            if (state.tutorialMode) {
+                setTimeout(checkTutorialStep, 500);
+            }
+        }
+
+        function checkTutorialStep() {
+            if (!state.tutorialMode) return;
+            
+            const step = tutorialSteps[state.currentTutorialStep];
+            if (!state.tutorialCompleted.includes(step.id) && step.check()) {
+                state.tutorialCompleted.push(step.id);
+                updateTutorial();
+                
+                setTimeout(() => {
+                    if (state.currentTutorialStep < tutorialSteps.length - 1) {
+                        state.currentTutorialStep++;
+                        resetBallot();
+                        updateTutorial();
+                    } else {
+                        alert('Gratulation! Sie haben alle Übungen erfolgreich abgeschlossen. Jetzt können Sie frei experimentieren.');
+                        endTutorial();
+                    }
+                }, 1500);
+            }
+        }
+
+        function selectList(listId) {
+            state.selectedList = listId;
+            state.showResults = false;
+            document.getElementById('resultsSection').classList.add('hidden');
+            
+            // Update UI
+            document.querySelectorAll('.list-button').forEach(btn => {
+                btn.classList.remove('selected');
+            });
+            event.target.closest('.list-button').classList.add('selected');
+            
+            // Show/hide custom name input
+            const customInput = document.getElementById('customListName');
+            if (listId === 'empty') {
+                customInput.classList.remove('hidden');
+                state.ballot = [];
+            } else {
+                customInput.classList.add('hidden');
+                state.customListName = '';
+                // Füge vorgedruckte Kandidaten hinzu
+                state.ballot = parties[listId].candidates.map(c => ({...c}));
+            }
+            
+            updateBallot();
+            
+            if (state.tutorialMode) {
+                checkTutorialStep();
+            }
+        }
+
+        function renderCandidates() {
+            const container = document.getElementById('candidatesSection');
+            container.innerHTML = Object.entries(parties).map(([id, party]) => `
+                <div class="party-box">
+                    <div class="party-header">
+                        <span class="party-color ${party.color}" style="width: 12px; height: 12px;"></span>
+                        <h3>${party.name}</h3>
+                    </div>
+                    <div class="candidates-grid">
+                        ${party.candidates.map(c => `
+                            <button class="candidate-btn" onclick="addCandidate('${c.id}')">
+                                + ${c.name}
+                            </button>
+                        `).join('')}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function addCandidate(candidateId) {
+            const candidate = Object.values(parties)
+                .flatMap(p => p.candidates)
+                .find(c => c.id === candidateId);
+            
+            if (!candidate) return;
+            
+            const currentCount = state.ballot.filter(c => c.id === candidateId).length;
+            
+            if (state.ballot.length >= maxSeats) {
+                alert(`Sie können maximal ${maxSeats} Kandidaten wählen.`);
+                return;
+            }
+            
+            if (currentCount >= 2) {
+                alert('Ein Kandidat kann maximal 2x aufgeführt werden (Kumulieren).');
+                return;
+            }
+            
+            state.ballot.push({...candidate});
+            state.showResults = false;
+            document.getElementById('resultsSection').classList.add('hidden');
+            updateBallot();
+            
+            if (state.tutorialMode) {
+                checkTutorialStep();
+            }
+        }
+
+        function removeCandidate(index) {
+            state.ballot.splice(index, 1);
+            state.showResults = false;
+            document.getElementById('resultsSection').classList.add('hidden');
+            updateBallot();
+            
+            if (state.tutorialMode) {
+                checkTutorialStep();
+            }
+        }
+
+        function updateBallot() {
+            // Update list name badge
+            const badge = document.getElementById('listNameBadge');
+            if (state.selectedList) {
+                if (state.selectedList === 'empty') {
+                    const customName = document.getElementById('customListName').value;
+                    badge.innerHTML = `<div class="list-name-badge">Liste: ${customName || 'Leere Liste (ohne Bezeichnung)'}</div>`;
+                } else {
+                    const party = parties[state.selectedList];
+                    badge.innerHTML = `<div class="list-name-badge"><span class="party-color ${party.color}" style="width: 12px; height: 12px;"></span>Liste: ${party.name}</div>`;
+                }
+            } else {
+                badge.innerHTML = '';
+            }
+            
+            // Update ballot lines
+            const lines = document.getElementById('ballotLines');
+            lines.innerHTML = Array.from({length: maxSeats}, (_, i) => {
+                const candidate = state.ballot[i];
+                if (candidate) {
+                    const party = parties[candidate.party];
+                    return `
+                        <div class="ballot-line">
+                            <span class="line-number">${i + 1}.</span>
+                            <div class="line-content">
+                                <div class="candidate-info">
+                                    <span class="party-color ${party.color}" style="width: 12px; height: 12px;"></span>
+                                    <span style="font-weight: 500;">${candidate.name}</span>
+                                    <span style="color: #6b7280; font-size: 14px;">(${party.name})</span>
+                                </div>
+                                <button class="remove-btn no-print" onclick="removeCandidate(${i})">✕</button>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    return `
+                        <div class="ballot-line">
+                            <span class="line-number">${i + 1}.</span>
+                            <div class="line-content">
+                                <span class="empty-line">_____________________________</span>
+                            </div>
+                        </div>
+                    `;
+                }
+            }).join('');
+            
+            // Update footer
+            document.getElementById('usedVotes').textContent = `Verwendete Stimmen: ${state.ballot.length} / ${maxSeats}`;
+            document.getElementById('emptyLines').textContent = `Leere Linien: ${maxSeats - state.ballot.length}`;
+        }
+
+        function resetBallot() {
+            state.selectedList = '';
+            state.customListName = '';
+            state.ballot = [];
+            state.showResults = false;
+            document.getElementById('customListName').value = '';
+            document.getElementById('resultsSection').classList.add('hidden');
+            document.querySelectorAll('.list-button').forEach(btn => {
+                btn.classList.remove('selected');
+            });
+            updateBallot();
+        }
+
+        function calculateResults() {
+            const results = {
+                candidateVotes: {},
+                partyVotes: { sp: 0, fdp: 0, svp: 0, gruene: 0 }
+            };
+            
+            // Zähle Kandidatenstimmen
+            state.ballot.forEach(candidate => {
+                results.candidateVotes[candidate.id] = (results.candidateVotes[candidate.id] || 0) + 1;
+                results.partyVotes[candidate.party]++;
+            });
+            
+            // Leere Linien auf vorgedruckten Listen
+            if (state.selectedList && state.selectedList !== 'empty') {
+                const emptyLines = maxSeats - state.ballot.length;
+                results.partyVotes[state.selectedList] += emptyLines;
+            }
+            
+            // Zeige Ergebnisse
+            showResults(results);
+        }
+
+        function showResults(results) {
+            const resultsSection = document.getElementById('resultsSection');
+            resultsSection.classList.remove('hidden');
+            
+            // Parteistimmen
+            const partyResultsHtml = Object.entries(results.partyVotes)
+                .filter(([_, votes]) => votes > 0)
+                .sort((a, b) => b[1] - a[1])
+                .map(([partyId, votes]) => {
+                    const party = parties[partyId];
+                    return `
+                        <div class="result-item">
+                            <div class="result-party">
+                                <span class="party-color ${party.color}"></span>
+                                <span>${party.name}</span>
+                            </div>
+                            <span class="result-votes">${votes} Stimmen</span>
+                        </div>
+                    `;
+                }).join('');
+            
+            document.getElementById('partyResults').innerHTML = partyResultsHtml;
+            
+            // Kandidatenstimmen
+            const candidateResultsHtml = Object.entries(results.candidateVotes)
+                .map(([candidateId, votes]) => {
+                    const candidate = Object.values(parties)
+                        .flatMap(p => p.candidates)
+                        .find(c => c.id === candidateId);
+                    const party = parties[candidate.party];
+                    return { candidate, party, votes };
+                })
+                .sort((a, b) => b.votes - a.votes)
+                .map(({ candidate, party, votes }) => `
+                    <div class="result-item">
+                        <div class="result-party">
+                            <span class="party-color ${party.color}" style="width: 12px; height: 12px;"></span>
+                            <span style="font-size: 14px;">${candidate.name}</span>
+                        </div>
+                        <span style="font-weight: 600;">${votes} ${votes === 1 ? 'Stimme' : 'Stimmen'}</span>
+                    </div>
+                `).join('');
+            
+            document.getElementById('candidateResults').innerHTML = candidateResultsHtml;
+            
+            // Update explanation
+            document.getElementById('emptyLinesExplanation').style.display = 
+                (state.selectedList && state.selectedList !== 'empty') ? 'list-item' : 'none';
+            
+            // Scroll to results
+            resultsSection.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function printBallot() {
+            // Berechne Ergebnisse für Druckansicht
+            const results = {
+                candidateVotes: {},
+                partyVotes: { sp: 0, fdp: 0, svp: 0, gruene: 0 }
+            };
+            
+            state.ballot.forEach(candidate => {
+                results.candidateVotes[candidate.id] = (results.candidateVotes[candidate.id] || 0) + 1;
+                results.partyVotes[candidate.party]++;
+            });
+            
+            if (state.selectedList && state.selectedList !== 'empty') {
+                const emptyLines = maxSeats - state.ballot.length;
+                results.partyVotes[state.selectedList] += emptyLines;
+            }
+            
+            // Berechne Sitzverteilung
+            const totalVotes = Object.values(results.partyVotes).reduce((a, b) => a + b, 0);
+            const seatDistribution = {};
+            let remainingSeats = maxSeats;
+            
+            // Erste Runde: Ganze Sitze
+            Object.entries(results.partyVotes).forEach(([partyId, votes]) => {
+                const seats = Math.floor((votes / totalVotes) * maxSeats);
+                seatDistribution[partyId] = seats;
+                remainingSeats -= seats;
+            });
+            
+            // Zweite Runde: Restliche Sitze
+            if (remainingSeats > 0 && totalVotes > 0) {
+                const remainders = Object.entries(results.partyVotes)
+                    .map(([partyId, votes]) => ({
+                        partyId,
+                        remainder: (votes / totalVotes * maxSeats) - seatDistribution[partyId]
+                    }))
+                    .sort((a, b) => b.remainder - a.remainder);
+                
+                for (let i = 0; i < remainingSeats && i < remainders.length; i++) {
+                    seatDistribution[remainders[i].partyId]++;
+                }
+            }
+            
+            // Druckansicht erstellen
+            const printWindow = window.open('', '', 'width=800,height=900');
+            const date = new Date().toLocaleDateString('de-CH');
+            
+            let listName = '';
+            if (state.selectedList === 'empty') {
+                listName = document.getElementById('customListName').value || 'Leere Liste (ohne Bezeichnung)';
+            } else if (state.selectedList) {
+                listName = parties[state.selectedList].name;
+            }
+            
+            printWindow.document.write(`
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <title>Wahlzettel - Nationalratswahl</title>
+                    <style>
+                        body { font-family: Arial, sans-serif; padding: 20px; line-height: 1.5; }
+                        h1 { text-align: center; font-size: 24px; margin-bottom: 10px; }
+                        .header { text-align: center; margin-bottom: 30px; }
+                        .list-name { background-color: #f0f0f0; padding: 10px; margin: 20px 0; text-align: center; }
+                        .candidate-line { border-bottom: 1px solid #ccc; padding: 10px 0; display: flex; }
+                        .line-number { width: 30px; }
+                        .footer { margin-top: 30px; padding-top: 20px; border-top: 2px solid #ccc; }
+                        .results { margin-top: 40px; padding: 20px; background-color: #f9f9f9; border: 1px solid #ddd; }
+                        .results table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+                        .results th, .results td { padding: 8px; text-align: left; border-bottom: 1px solid #ddd; }
+                        .results th { background-color: #e0e0e0; }
+                        @media print { body { margin: 0; } }
+                    </style>
+                </head>
+                <body>
+                    <div class="header">
+                        <h1>WAHLZETTEL</h1>
+                        <p>Nationalratswahl - ${maxSeats} Sitze</p>
+                        <p>Datum: ${date}</p>
+                    </div>
+                    
+                    ${listName ? `<div class="list-name"><strong>Liste: ${listName}</strong></div>` : ''}
+                    
+                    <div class="candidates">
+                        ${Array.from({length: maxSeats}, (_, i) => {
+                            const candidate = state.ballot[i];
+                            return `
+                                <div class="candidate-line">
+                                    <span class="line-number">${i + 1}.</span>
+                                    <span>${candidate ? `${candidate.name} (${parties[candidate.party].name})` : '_________________________________'}</span>
+                                </div>
+                            `;
+                        }).join('')}
+                    </div>
+                    
+                    <div class="footer">
+                        <p>Verwendete Stimmen: ${state.ballot.length} / ${maxSeats}</p>
+                        <p>Leere Linien: ${maxSeats - state.ballot.length}</p>
+                    </div>
+                    
+                    <div class="results">
+                        <h2>Sitzverteilung (basierend auf diesem Wahlzettel)</h2>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Partei</th>
+                                    <th>Stimmen</th>
+                                    <th>Stimmenanteil</th>
+                                    <th style="text-align: center;">Sitze</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${Object.entries(results.partyVotes)
+                                    .filter(([_, votes]) => votes > 0)
+                                    .map(([partyId, votes]) => {
+                                        const percentage = totalVotes > 0 ? ((votes / totalVotes) * 100).toFixed(1) : '0.0';
+                                        return `
+                                            <tr>
+                                                <td>${parties[partyId].name}</td>
+                                                <td>${votes}</td>
+                                                <td>${percentage}%</td>
+                                                <td style="text-align: center; font-weight: bold;">${seatDistribution[partyId] || 0}</td>
+                                            </tr>
+                                        `;
+                                    }).join('')}
+                            </tbody>
+                        </table>
+                        <p style="margin-top: 15px; font-size: 12px; color: #666;">
+                            Hinweis: Diese Sitzverteilung basiert nur auf diesem einzelnen Wahlzettel. 
+                            In der Realität werden alle abgegebenen Wahlzettel zusammengezählt.
+                        </p>
+                    </div>
+                </body>
+                </html>
+            `);
+            
+            printWindow.document.close();
+            printWindow.focus();
+            printWindow.print();
+            printWindow.close();
+        }
+
+        // Initialize
+        init();
+    </script>
+</body>
+</html>
